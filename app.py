@@ -21,13 +21,11 @@ query = input("Ask a question: ")
 
 results = retriever.search(query)
 
-generator = Generator(
-    api_key="YOUR_GROQ_API_KEY"
-)
+THRESHOLD = 0.30
 
-response = generator.generate(
-    query,
-    results
-)
-
-print(response)
+if not results or results[0]["score"] < THRESHOLD:
+    print("I don't know based on the provided documents.")
+else:
+    generator = Generator(api_key="YOUR_GROQ_API_KEY")
+    response = generator.generate(query, results)
+    print(response)
