@@ -37,6 +37,8 @@ User: {query}
         return response.choices[0].message.content
 
     def respond(self, query, observation):
+
+        print("Respond Method Called")
     
         prompt = f"""
     User asked:
