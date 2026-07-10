@@ -3,6 +3,7 @@ class Chunker:
         self.chunk_size = chunk_size
         self.overlap = overlap
 
+    
     def chunk_text(self, text, source):
         chunks = []
 
