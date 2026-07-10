@@ -1,47 +1,58 @@
-from framework_planner import plan
-from framework_tools import calculate, rag_search
-from framework_utils import build_tool_descriptions
-from framework_tools import get_weather
+from dotenv import load_dotenv
+from langchain.agents import create_agent
+from langchain_groq import ChatGroq
+
+from framework_tools import calculate, rag_search, weather
 
 
-# Single source of truth
+load_dotenv()
+
+
+llm = ChatGroq(
+    model="llama-3.3-70b-versatile",
+    temperature=0.1
+)
+
+
 tools = [
     calculate,
-    get_weather,
-    rag_search
+    rag_search,
+    weather
 ]
 
-# Automatically build tool descriptions for the planner
-tool_descriptions = build_tool_descriptions(tools)
 
-# Automatically build the tool registry
-tool_registry = {
-    tool.name: tool
-    for tool in tools
-}
+agent = create_agent(
+    model=llm,
+    tools=tools
+)
 
 
 def run(query: str):
 
-    # Ask the planner which tool to use
-    decision = plan(query, tool_descriptions)
+    response = agent.invoke(
+        {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": query
+                }
+            ]
+        }
+    )
 
-    print("Planner Decision:", decision)
-
-    # Find the selected tool
-    tool = tool_registry.get(decision.tool)
-
-    if tool is None:
-        raise ValueError(f"Unknown tool selected: {decision.tool}")
-
-    # Execute the tool
-    result = tool.invoke(decision.input)
-
-    return result
+    return response["messages"][-1].content
 
 
 if __name__ == "__main__":
 
-    result = run("What is the weather in Delhi?")
+    while True:
 
-    print(result)
+        query = input("\nAsk a question: ")
+
+        if query.lower() == "exit":
+            break
+
+        answer = run(query)
+
+        print("\nAnswer:\n")
+        print(answer)

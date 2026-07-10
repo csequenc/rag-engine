@@ -1,3 +1,4 @@
+from multiprocessing import context
 import os
 import requests
 
@@ -63,5 +64,10 @@ def rag_search(question: str) -> str:
         results
     )
 
-    return str(results)
+    context = "\n\n".join(
+    chunk["text"]
+    for chunk in results
+    )
+
+    return context
 
