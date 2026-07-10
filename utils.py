@@ -1,6 +1,5 @@
 import os
 
-
 def load_documents(folder_path, chunker):
 
     all_chunks = []
