@@ -2,6 +2,7 @@ from planner import Planner
 import os
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 planner = Planner(os.getenv("GROQ_API_KEY"))
