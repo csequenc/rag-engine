@@ -1,11 +1,14 @@
 from framework_planner import plan
-from framework_tools import calculate
+from framework_tools import calculate, rag_search
 from framework_utils import build_tool_descriptions
+from framework_tools import get_weather
 
 
 # Single source of truth
 tools = [
-    calculate
+    calculate,
+    get_weather,
+    rag_search
 ]
 
 # Automatically build tool descriptions for the planner
@@ -39,6 +42,6 @@ def run(query: str):
 
 if __name__ == "__main__":
 
-    result = run("25 * 17")
+    result = run("What is the weather in Delhi?")
 
     print(result)

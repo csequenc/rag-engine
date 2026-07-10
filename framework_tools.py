@@ -1,4 +1,12 @@
+import os
+import requests
+
+from dotenv import load_dotenv
 from langchain.tools import tool
+from langchain.tools import tool
+from framework_rag import retriever,reranker
+
+load_dotenv()
 
 @tool
 def calculate(expression: str) -> str:
@@ -8,4 +16,52 @@ def calculate(expression: str) -> str:
     
     """
     return str(eval(expression))
+
+
+@tool
+def get_weather(city: str) -> str:
+    """
+    Get the current weather for a city.
+    """
+
+    api_key = os.getenv("OPENWEATHER_API_KEY")
+
+    url = "https://api.openweathermap.org/data/2.5/weather"
+
+    params = {
+        "q": city,
+        "appid": api_key,
+        "units": "metric"
+    }
+
+    response = requests.get(url, params=params, timeout=10)
+
+    data = response.json()
+    
+    print(os.getenv("OPENWEATHER_API_KEY"))
+    print(response.status_code)
+    print(data)
+
+    temperature = data["main"]["temp"]
+    condition = data["weather"][0]["description"]
+
+    return f"{city}: {temperature}°C, {condition}"
+
+@tool
+def rag_search(question: str) -> str:
+    """
+    Search the uploaded documents.
+    """
+
+    results = retriever.search(
+        question,
+        top_k=5
+    )
+
+    results = reranker.rerank(
+        question,
+        results
+    )
+
+    return str(results)
 
