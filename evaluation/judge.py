@@ -79,10 +79,6 @@ def judge_generation(result, record):
     judge_output = response.choices[0].message.content
 
     try:
-        
-        print("\n========== Judge Output ==========")
-        print(judge_output)
-        print("=================================\n")
         judge_result = json.loads(judge_output)
 
     except json.JSONDecodeError:
