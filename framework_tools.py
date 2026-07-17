@@ -58,7 +58,11 @@ def weather(city: str) -> str:
 @tool
 def rag_search(question: str) -> str:
     """
-    Search the uploaded documents.
+    Search the uploaded knowledge base for information relevant to the user's question.
+
+    Use this tool whenever the answer depends on the uploaded documents.
+    Input should be the user's question.
+    The tool returns relevant document excerpts as plain text that should be used to answer the user.
     """
 
     results = retriever.search(
